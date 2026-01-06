@@ -6,7 +6,9 @@ Use of this source code is governed by terms that can be
 found in the LICENSE file in the root of this package.
 -->
 
-# @rljson/template-project
+# node-sqlite
+
+A Node.js SQLite wrapper using the native `node:sqlite` module.
 
 ## Users
 
