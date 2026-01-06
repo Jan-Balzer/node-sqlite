@@ -120,7 +120,7 @@ export class NodeSQLite {
 
     const stmt = this.db.prepare(sql);
     const result = stmt.get(...(params as never[]));
-    return (result as T) || null;
+    return (result as T) ?? null;
   }
 
   /**

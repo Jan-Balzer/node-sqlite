@@ -8,7 +8,7 @@ found in the LICENSE file in the root of this package.
 
 # node-sqlite
 
-A Node.js SQLite wrapper using the native `node:sqlite` module (available in Node.js 22.5.0+).
+A Node.js SQLite wrapper using the native `node:sqlite` module (available in Node.js 22.14.0+).
 
 ## Installation
 
