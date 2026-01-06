@@ -78,13 +78,13 @@ export class NodeSQLite {
    * @param params - Parameters for the SQL statement
    * @returns Object with changes count and lastInsertRowid
    */
-  execute(sql: string, ...params: unknown[]): { changes: number; lastInsertRowid: number | bigint } {
+  execute(sql: string, ...params: unknown[]): { changes: number | bigint; lastInsertRowid: number | bigint } {
     if (!this.db) {
       throw new Error('Database is not open');
     }
 
     const stmt = this.db.prepare(sql);
-    const result = stmt.run(...params);
+    const result = stmt.run(...(params as never[]));
     
     return {
       changes: result.changes,
@@ -104,7 +104,7 @@ export class NodeSQLite {
     }
 
     const stmt = this.db.prepare(sql);
-    return stmt.all(...params) as T[];
+    return stmt.all(...(params as never[])) as T[];
   }
 
   /**
@@ -119,7 +119,7 @@ export class NodeSQLite {
     }
 
     const stmt = this.db.prepare(sql);
-    const result = stmt.get(...params);
+    const result = stmt.get(...(params as never[]));
     return (result as T) || null;
   }
 
