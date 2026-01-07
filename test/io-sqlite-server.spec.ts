@@ -6,13 +6,13 @@
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { SqliteViaNode } from '../src/sqlite-via-node';
+import { IoSqliteServer } from '../src/io-sqlite-server';
 
-describe('SqliteViaNode', () => {
-  let sVN: SqliteViaNode;
+describe('IoSqlLiteServer', () => {
+  let sVN: IoSqliteServer;
 
   beforeEach(() => {
-    sVN = new SqliteViaNode();
+    sVN = new IoSqliteServer();
   });
 
   afterEach(() => {
@@ -28,6 +28,7 @@ describe('SqliteViaNode', () => {
 
   describe('execute', () => {
     it('should create a table', () => {
+      sVN.execute('DROP TABLE IF EXISTS users');
       const result = sVN.execute(
         'CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)',
       );
@@ -44,5 +45,11 @@ describe('SqliteViaNode', () => {
       expect(result).toBeDefined();
       expect(Array.isArray(result)).toBe(true);
     });
+  });
+
+  it('should return something', async () => {
+    await sVN.init();
+    const result = sVN.execute('SELECT 1 as value');
+    expect(result).toBeDefined();
   });
 });

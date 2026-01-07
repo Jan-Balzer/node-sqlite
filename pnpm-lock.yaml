@@ -11,6 +11,12 @@ importers:
       '@rljson/hash':
         specifier: ^0.0.17
         version: 0.0.17
+      '@rljson/io':
+        specifier: ^0.0.63
+        version: 0.0.63
+      '@rljson/is-ready':
+        specifier: ^0.0.17
+        version: 0.0.17
       '@rljson/json':
         specifier: ^0.0.23
         version: 0.0.23
@@ -382,8 +388,20 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
+  '@rljson/hash@0.0.16':
+    resolution: {integrity: sha512-RbMQUEP4uhSTVArvRRXR73bXyQRbghuYzhzQiJyDyTsyFJiDbEcSKEyU1VYbJ3PPEu6HUklRx6ieZC0kPGDEcQ==}
+    engines: {node: '>=22.14.0'}
+
   '@rljson/hash@0.0.17':
     resolution: {integrity: sha512-yZySXCa07gyo/HTuUaL/3gyq8kP94c6ZIWFEMZTNDeSVz568YKvj1fdEXG6PApg39HD5UeO/jkNE484McoP5Rg==}
+    engines: {node: '>=22.14.0'}
+
+  '@rljson/io@0.0.63':
+    resolution: {integrity: sha512-XwzkD/Hp+CmPtlBeNkd6B0JjdpFXm3tK/uYnAS3k0CyjI8HSc6FMU4/f2fmt+Ka74RUeZFOZN8voenJ0iLrsYA==}
+    engines: {node: '>=22.14.0'}
+
+  '@rljson/is-ready@0.0.17':
+    resolution: {integrity: sha512-rSDcGRWIngcOPJ/uE2kHGBhVoo/jEBKlmeJ5BdeDcSi3i6KrFIsIYepOJvybMc8+gcCOgecivCpPRd4fHksdcA==}
     engines: {node: '>=22.14.0'}
 
   '@rljson/json@0.0.21':
@@ -394,8 +412,16 @@ packages:
     resolution: {integrity: sha512-ViYo8zx0z/SomjpS2f+xK+tS7HTwZI1HzRarHpXO3spVjpaF+GKCa7HgDXoV/Wc+zsliDzo8wz7S5NFb0yZaow==}
     engines: {node: '>=22.14.0'}
 
+  '@rljson/rljson@0.0.55':
+    resolution: {integrity: sha512-anRhE21B5VEqTlDjcJy3ce7yrTZ/hwPN3C4YQCd1FnFfJZI4mjhlnygvCBhSR9WDLnIAxDFERFBt20f57PVBsQ==}
+    engines: {node: '>=22.14.0'}
+
   '@rljson/rljson@0.0.73':
     resolution: {integrity: sha512-kZnPBPd20rtPcgvpClgAQg+rrFJ/xoGlIWeKxn5lggNc0cGyns8Fixdyti/VPMJdFXWNtHPvZyUczeXCvTwTEA==}
+    engines: {node: '>=22.14.0'}
+
+  '@rljson/validate@0.0.11':
+    resolution: {integrity: sha512-XigbFKLQMLb420UwgwRDRRWdbsL6wNv3l7dxQqs/Z66EQhEPtoc0FSGLfIFM5X4gPd1zJFTIUIwcUOv47PjFkw==}
     engines: {node: '>=22.14.0'}
 
   '@rollup/pluginutils@5.3.0':
@@ -2039,21 +2065,48 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
+  '@rljson/hash@0.0.16':
+    dependencies:
+      '@aws-crypto/sha256-js': 5.2.0
+      '@rljson/json': 0.0.21
+      js-base64: 3.7.8
+
   '@rljson/hash@0.0.17':
     dependencies:
       '@aws-crypto/sha256-js': 5.2.0
       '@rljson/json': 0.0.21
       js-base64: 3.7.8
 
+  '@rljson/io@0.0.63':
+    dependencies:
+      '@rljson/hash': 0.0.17
+      '@rljson/is-ready': 0.0.17
+      '@rljson/json': 0.0.23
+      '@rljson/rljson': 0.0.73
+      '@rljson/validate': 0.0.11
+
+  '@rljson/is-ready@0.0.17': {}
+
   '@rljson/json@0.0.21': {}
 
   '@rljson/json@0.0.23': {}
+
+  '@rljson/rljson@0.0.55':
+    dependencies:
+      '@rljson/hash': 0.0.16
+      '@rljson/json': 0.0.21
 
   '@rljson/rljson@0.0.73':
     dependencies:
       '@rljson/hash': 0.0.17
       '@rljson/json': 0.0.23
       nanoid: 5.1.6
+
+  '@rljson/validate@0.0.11':
+    dependencies:
+      '@rljson/hash': 0.0.16
+      '@rljson/json': 0.0.21
+      '@rljson/rljson': 0.0.55
 
   '@rollup/pluginutils@5.3.0(rollup@4.55.1)':
     dependencies:
