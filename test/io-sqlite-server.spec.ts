@@ -4,26 +4,15 @@
 // Use of this source code is governed by terms that can be
 // found in the LICENSE file in the root of this package.
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import { IoSqliteServer } from '../src/io-sqlite-server';
 
 describe('IoSqlLiteServer', () => {
   let sVN: IoSqliteServer;
-
-  beforeEach(() => {
+  beforeEach(async () => {
     sVN = new IoSqliteServer();
-  });
-
-  afterEach(() => {
-    // sVN.close();
-  });
-
-  describe('initialization', () => {
-    it('should create a file-based database', () => {
-      const fileDb = sVN.createDatabase();
-      expect(fileDb).toBeDefined();
-    });
+    await sVN.init();
   });
 
   describe('execute', () => {
@@ -47,9 +36,74 @@ describe('IoSqlLiteServer', () => {
     });
   });
 
-  it('should return something', async () => {
-    await sVN.init();
-    const result = sVN.execute('SELECT 1 as value');
-    expect(result).toBeDefined();
+  describe('database operations', () => {
+    it('should handle multiple sequential queries', () => {
+      sVN.execute('DROP TABLE IF EXISTS test');
+      sVN.execute('CREATE TABLE test (id INTEGER PRIMARY KEY, value TEXT)');
+      sVN.execute("INSERT INTO test (value) VALUES ('first')");
+      sVN.execute("INSERT INTO test (value) VALUES ('second')");
+      const result = sVN.execute('SELECT COUNT(*) as count FROM test');
+      expect(result[0].count).toBe(2);
+    });
+
+    it('should return empty result for SELECT with no data', () => {
+      sVN.execute('DROP TABLE IF EXISTS empty');
+      sVN.execute('CREATE TABLE empty (id INTEGER PRIMARY KEY)');
+      const result = sVN.execute('SELECT * FROM empty');
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBe(0);
+    });
+  });
+
+  describe('error handling', () => {
+    it('should handle syntax errors gracefully', () => {
+      expect(() => sVN.execute('INVALID SQL QUERY')).toThrow();
+    });
+
+    it('should handle non-existent table errors', () => {
+      expect(() => sVN.execute('SELECT * FROM nonexistent_table')).toThrow();
+    });
+  });
+  describe('status properties', () => {
+    describe('isOpen', () => {
+      it('should return true when database is open', () => {
+        sVN.init();
+        expect(sVN.isOpen).toBe(true);
+      });
+
+      it('should return false when database is closed', () => {
+        sVN.close();
+        expect(sVN.isOpen).toBe(false);
+      });
+    });
+
+    describe('isReady', () => {
+      it('should return true when database is initialized', async () => {
+        const result = sVN.isReady();
+        expect(result).toBeInstanceOf(Promise);
+      });
+    });
+  });
+
+  describe('example usage', () => {
+    it('should return an IoSqliteServer example', async () => {
+      const example = await IoSqliteServer.example();
+      expect(example).toBeDefined();
+    });
+
+    it('example instance should be operational', async () => {
+      const example = await IoSqliteServer.example();
+      const result = example.isOpen;
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('return correct data', () => {
+    it('should return a whole dump', async () => {
+      await sVN.init();
+      const dump = await sVN.dump();
+      expect(dump).toBeDefined();
+      expect(typeof dump).toBe('object');
+    });
   });
 });

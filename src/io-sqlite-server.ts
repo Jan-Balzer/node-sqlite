@@ -38,8 +38,7 @@ export class IoSqliteServer implements Io {
   }
 
   async init(): Promise<void> {
-    // const SQL = await initSql();
-    this.db = new DatabaseSync(':memory:');
+    this._createDatabase('./data/test2.db');
     this._isOpen = true;
     this._ioTools = new IoTools(this);
     this._initTableCfgs();
@@ -86,14 +85,20 @@ export class IoSqliteServer implements Io {
   async rawTableCfgs(): Promise<TableCfg[]> {
     const tableCfg = IoTools.tableCfgsTableCfg;
     const resultSet = this.db.prepare(this._sql.tableCfgs).all();
-    const jsonResult = this._convertToReturn(resultSet);
-    const parsedReturnValue = this._parseData(jsonResult, tableCfg);
+
+    const rowArray: Json[] = [];
+    for (const row of resultSet) {
+      rowArray.push(row as unknown as Json);
+    }
+
+    const parsedReturnValue = this._parseData(rowArray, tableCfg);
     return parsedReturnValue as TableCfg[];
   }
 
   async write(request: { data: Rljson }): Promise<void> {
     await this._write(request);
   }
+
   readRows(request: {
     table: string;
     where: { [column: string]: JsonValue };
@@ -109,13 +114,15 @@ export class IoSqliteServer implements Io {
     return count;
   }
 
-  public createDatabase(): string {
-    const dbFile = './data/app.db';
-    mkdirSync(dirname(dbFile), { recursive: true });
-    const database = new DatabaseSync(dbFile);
-    console.log('Database created at', dbFile);
-    database.close();
-    return dbFile;
+  private _createDatabase(fileName?: string): string {
+    if (!fileName) {
+      this.db = new DatabaseSync(':memory:');
+      return ':memory:';
+    } else {
+      mkdirSync(dirname(fileName), { recursive: true });
+      this.db = new DatabaseSync(fileName);
+      return fileName;
+    }
   }
 
   public queryDatabase(): Array<{ id: number; name: string }> {
@@ -139,11 +146,13 @@ export class IoSqliteServer implements Io {
   //********Private section */
 
   private _isOpen = false;
+
   private async _dump(): Promise<Rljson> {
     const returnFile: Rljson = {};
     const resultSet = this.db.prepare(this._sql.tableKeys).all();
-    const jsonResultSet = this._convertToReturn(resultSet);
-    const tableNames = jsonResultSet[0]?.values?.map((row: any[]) => row[0]);
+    const tableNames: string[] = resultSet
+      .map((row) => row.name as string)
+      .filter((name): name is string => name != null);
 
     for (const table of tableNames) {
       const tableDump: Rljson = await this._dumpTable({
@@ -220,7 +229,11 @@ export class IoSqliteServer implements Io {
     // as this is the first row to be entered, it is entered manually
     // const values = this._serializeRow(tableCfg, tableCfg);
 
-    this.db.prepare(this._sql.insertTableCfg());
+    const valuesFromTableCfg = this._serializeRow(tableCfg, tableCfg);
+
+    this.db
+      .prepare(this._sql.insertTableCfg())
+      .run(...(valuesFromTableCfg as any[]));
   };
 
   private _serializeRow(
@@ -353,7 +366,7 @@ export class IoSqliteServer implements Io {
     const result = this.db
       .prepare(this._sql.tableExists())
       .get(tableKeyWithSuffix);
-    return result?.tableKey === tableKeyWithSuffix ? true : false;
+    return result?.name === tableKeyWithSuffix ? true : false;
   }
   _whereString(whereClause: [string, JsonValue][]): string {
     let whereString: string = ' ';
@@ -467,9 +480,7 @@ export class IoSqliteServer implements Io {
       IoTools.tableCfgsTableCfg,
     );
 
-    const valuesString = values.join(', ');
-    const p = this.db.prepare(this._sql.insertTableCfg());
-    p.run(valuesString);
+    this.db.prepare(this._sql.insertTableCfg()).run(...(values as any[]));
   }
 
   private async _extendTable(newTableCfg: TableCfg): Promise<void> {

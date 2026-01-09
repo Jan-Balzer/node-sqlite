@@ -64,7 +64,7 @@ describe('SQlStatements', () => {
   });
 
   test('createMainTable generates correct query', () => {
-    const expectedQuery = `CREATE TABLE tableCfgs_tbl (_hash_col TEXT PRIMARY KEY, key_col TEXT, type_col TEXT, isHead_col INTEGER, isRoot_col INTEGER, isShared_col INTEGER, previous_col TEXT, columns_col TEXT)`;
+    const expectedQuery = `CREATE TABLE IF NOT EXISTS tableCfgs_tbl (_hash_col TEXT PRIMARY KEY, key_col TEXT, type_col TEXT, isHead_col INTEGER, isRoot_col INTEGER, isShared_col INTEGER, previous_col TEXT, columns_col TEXT)`;
     expect(sql.createTableCfgsTable).toBe(expectedQuery);
   });
 
@@ -99,7 +99,7 @@ describe('SQlStatements', () => {
   test('fillTable generates correct query', () => {
     const tableKey = 'testTable';
     const commonColumns = 'column1, column2';
-    const expectedQuery = `INSERT INTO testTable_tbl (column1, column2) SELECT column1, column2 FROM testTable_tmp`;
+    const expectedQuery = `INSERT OR IGNORE INTO testTable_tbl (column1, column2) SELECT column1, column2 FROM testTable_tmp`;
     expect(sql.fillTable(tableKey, commonColumns)).toBe(expectedQuery);
   });
 
@@ -274,7 +274,7 @@ describe('SQlStatements', () => {
 
   test('insertTableCfg generates correct query', () => {
     const expectedQuery =
-      'INSERT INTO tableCfgs_tbl ( _hash_col, key_col, type_col, isHead_col, isRoot_col, isShared_col, previous_col, columns_col ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+      'INSERT OR IGNORE INTO tableCfgs_tbl ( _hash_col, key_col, type_col, isHead_col, isRoot_col, isShared_col, previous_col, columns_col ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
     const actualQuery = sql.insertTableCfg();
     expect(actualQuery).toBe(expectedQuery);
   });

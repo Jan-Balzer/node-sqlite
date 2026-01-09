@@ -157,7 +157,7 @@ export class SqlStatements {
     const columnsSql = columnKeysWithPostfix.join(', ');
     const valuesSql = '?, '.repeat(columnKeys.length - 1) + '?';
 
-    return `INSERT INTO ${this._map.addTableSuffix(
+    return `INSERT OR IGNORE INTO ${this._map.addTableSuffix(
       this._map.tableNames.main,
     )} ( ${columnsSql} ) VALUES (${valuesSql})`;
   }
@@ -205,7 +205,7 @@ export class SqlStatements {
 
   fillTable(tableKey: string, commonColumns: string) {
     // select only those columns that are in both tables
-    return `INSERT INTO ${this._map.addTableSuffix(
+    return `INSERT OR IGNORE INTO ${this._map.addTableSuffix(
       tableKey,
     )} (${commonColumns}) SELECT ${commonColumns} FROM ${this._map.addTmpSuffix(
       tableKey,
@@ -246,9 +246,9 @@ export class SqlStatements {
     const conKey = `${this._map.addColumnSuffix(
       this._map.primaryKeyColumn,
     )} TEXT`;
-    const primaryKey = `${conKey} PRIMARY KEY`;
+    const primaryKey = `${conKey} PRIMARY KEY NOT NULL`;
     const colsWithPrimaryKey = sqlCreateColumns.replace(conKey, primaryKey);
-    return `CREATE TABLE ${sqltableKey} (${colsWithPrimaryKey})`;
+    return `CREATE TABLE IF NOT EXISTS ${sqltableKey} (${colsWithPrimaryKey})`;
   }
 
   alterTable(tableKey: TableKey, addedColumns: ColumnCfg[]): string[] {
