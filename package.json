@@ -1,9 +1,9 @@
 {
-  "name": "@rljson/template-project",
+  "name": "node-sqlite",
   "version": "0.0.18",
-  "description": "Rljson template-project description",
-  "homepage": "https://github.com/rljson/template-project",
-  "bugs": "https://github.com/rljson/template-project/issues",
+  "description": "A Node.js SQLite wrapper using the native node:sqlite module",
+  "homepage": "https://github.com/Jan-Balzer/node-sqlite",
+  "bugs": "https://github.com/Jan-Balzer/node-sqlite/issues",
   "private": false,
   "license": "MIT",
   "engines": {
@@ -11,9 +11,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rljson/template-project.git"
+    "url": "git+https://github.com/Jan-Balzer/node-sqlite.git"
   },
-  "main": "dist/template-project.js",
+  "main": "dist/node-sqlite.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"

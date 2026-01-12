@@ -22,6 +22,10 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
+        'node:sqlite',
+        'node:fs',
+        'node:path',
+        'node:os',
         '@rljson/rljson',
         '@rljson/json',
         '@rljson/hash',
